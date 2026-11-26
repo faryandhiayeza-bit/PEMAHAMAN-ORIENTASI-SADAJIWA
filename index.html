@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SADAJIWA - Orientasi oleh Magnus Edmund</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Chakra+Petch:ital,wght@0,600;0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #060911;
+      --panel-bg: rgba(12, 18, 32, 0.94);
+      --accent-blue: #38bdf8;
+      --accent-navy: #1e3a8a;
+      --accent-gold: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      height: 100dvh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .font-display {
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    .stage-bg {
+      background: 
+        radial-gradient(circle at 50% 35%, rgba(30, 58, 138, 0.35) 0%, rgba(6, 9, 17, 0.98) 70%),
+        linear-gradient(180deg, #070b14 0%, #0d1526 55%, #05070d 100%);
+      position: relative;
+    }
+
+    .grid-floor {
+      position: absolute;
+      bottom: 0;
+      left: -20%;
+      width: 140%;
+      height: 36%;
+      background-image: 
+        linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+      background-size: 36px 24px;
+      transform: perspective(320px) rotateX(62deg);
+      transform-origin: bottom;
+      pointer-events: none;
+    }
+
+    @keyframes idleBreath {
+      0%, 100% { transform: translateY(0px) scaleY(1); }
+      50% { transform: translateY(-4px) scaleY(1.012); }
+    }
+
+    @keyframes talkBounce {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-3px) rotate(-0.8deg); }
+      75% { transform: translateY(-2px) rotate(0.8deg); }
+    }
+
+    @keyframes hairSway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2.5deg); }
+    }
+
+    .chibi-idle {
+      animation: idleBreath 3.2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .chibi-talking {
+      animation: talkBounce 0.34s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    .ahoge-sway {
+      animation: hairSway 2.6s ease-in-out infinite;
+      transform-origin: 150px 58px;
+    }
+
+    .dialogue-box {
+      background: var(--panel-bg);
+      border: 1.5px solid rgba(56, 189, 248, 0.32);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 99px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.45);
+      border-radius: 99px;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 7px;
+      height: 15px;
+      background-color: var(--accent-blue);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .wave-bar {
+      width: 3px;
+      height: 4px;
+      background: var(--accent-gold);
+      border-radius: 2px;
+      transition: height 0.1s ease;
+    }
+    .speaking .wave-bar:nth-child(1) { animation: wave 0.5s infinite ease-in-out 0.0s; }
+    .speaking .wave-bar:nth-child(2) { animation: wave 0.5s infinite ease-in-out 0.15s; }
+    .speaking .wave-bar:nth-child(3) { animation: wave 0.5s infinite ease-in-out 0.3s; }
+    .speaking .wave-bar:nth-child(4) { animation: wave 0.5s infinite ease-in-out 0.1s; }
+    .speaking .wave-bar:nth-child(5) { animation: wave 0.5s infinite ease-in-out 0.25s; }
+
+    @keyframes wave {
+      0%, 100% { height: 4px; }
+      50% { height: 14px; }
+    }
+
+    .btn-action {
+      transition: all 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-action:active {
+      transform: scale(0.95);
+    }
+
+    .rank-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.72), rgba(15, 23, 42, 0.9));
+      border-left: 3px solid var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER BAR -->
+  <header class="z-30 flex items-center justify-between px-3 py-2.5 bg-slate-950/90 border-b border-slate-800/80 backdrop-blur-md">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-900 flex items-center justify-center border border-sky-400/40 shadow-lg shadow-sky-500/10">
+        <span class="font-display font-bold text-white text-sm tracking-wider">SD</span>
+      </div>
+      <div>
+        <div class="font-display font-bold text-xs tracking-widest text-sky-400">SADAJIWA</div>
+        <div class="text-[10px] text-slate-400">Orientasi Anggota</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-1.5">
+      <button id="btnReplayAudio" onclick="replayCurrentAudio()" title="Putar Ulang Suara" class="btn-action flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-amber-300">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span class="hidden sm:inline">Ulangi</span>
+      </button>
+
+      <button id="btnToggleMute" onclick="toggleMute()" title="Suara On/Off" class="btn-action flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-sky-300">
+        <span id="muteIcon">🔊</span>
+      </button>
+
+      <button onclick="openVoiceModal()" class="btn-action flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-xs font-semibold text-amber-300">
+        <span>🎙️</span>
+        <span>API Key</span>
+      </button>
+
+      <button onclick="toggleChapterMenu()" class="btn-action flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200">
+        <span>☰</span>
+        <span>Bab</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- STATUS BANNER -->
+  <div id="audioStatusBanner" class="z-20 px-3 py-1 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between text-[11px]">
+    <div class="flex items-center gap-2 truncate">
+      <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+      <span id="statusText" class="text-slate-300 truncate">Klik layar atau tombol API Key untuk mulai suara Magnus</span>
+    </div>
+    <button onclick="openVoiceModal()" class="text-sky-400 font-semibold underline shrink-0 ml-2">Atur Key</button>
+  </div>
+
+  <!-- MAIN STAGE (CHIBI CHARACTER + BIKE SILHOUETTE) -->
+  <main class="stage-bg flex-1 flex flex-col items-center justify-end relative overflow-hidden" onclick="handleStageClick()">
+    <div class="grid-floor"></div>
+
+    <!-- Ambient Motes -->
+    <div class="absolute inset-0 pointer-events-none opacity-40" style="background-image: radial-gradient(#38bdf8 1px, transparent 1px); background-size: 48px 48px;"></div>
+
+    <!-- Motorcycle Silhouette behind Chibi -->
+    <svg class="absolute bottom-2 w-[310px] sm:w-[370px] opacity-25 pointer-events-none" viewBox="0 0 400 180" fill="none">
+      <circle cx="85" cy="135" r="36" stroke="#38bdf8" stroke-width="5"/>
+      <circle cx="85" cy="135" r="20" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4"/>
+      <circle cx="315" cy="135" r="36" stroke="#38bdf8" stroke-width="5"/>
+      <circle cx="315" cy="135" r="20" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4"/>
+      <path d="M85 135 L145 85 L225 85 L265 55 L295 55 M275 55 L315 135 M145 85 L185 135 L255 135 L225 85" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M165 78 Q205 62 242 78 L230 92 L160 92 Z" fill="#1e3a8a" stroke="#38bdf8" stroke-width="2"/>
+      <circle cx="298" cy="68" r="9" fill="#38bdf8"/>
+      <path d="M307 65 L395 45 L395 92 L307 72 Z" fill="url(#headlightGrad)" opacity="0.45"/>
+      <defs>
+        <linearGradient id="headlightGrad" x1="307" y1="68" x2="395" y2="68" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#38bdf8"/>
+          <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <!-- CHIBI MAGNUS EDMUND SVG -->
+    <div id="chibiWrapper" class="chibi-idle relative z-10 w-[225px] sm:w-[255px] mb-[-10px] pointer-events-none">
+      <svg viewBox="0 0 300 320" class="w-full h-auto drop-shadow-[0_14px_24px_rgba(0,0,0,0.85)]">
+        <defs>
+          <linearGradient id="blondeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fde047"/>
+            <stop offset="55%" stop-color="#facc15"/>
+            <stop offset="100%" stop-color="#ca8a04"/>
+          </linearGradient>
+          <linearGradient id="jacketGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1e293b"/>
+            <stop offset="50%" stop-color="#0f172a"/>
+            <stop offset="100%" stop-color="#020617"/>
+          </linearGradient>
+          <linearGradient id="visorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0284c7"/>
+            <stop offset="50%" stop-color="#38bdf8"/>
+            <stop offset="100%" stop-color="#0369a1"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Back Hair -->
+        <path d="M74 115 Q62 162 76 196 L94 182 L102 198 L198 198 L206 182 L224 196 Q238 162 226 115 Z" fill="#a16207"/>
+
+        <!-- Body / Biker Leather Jacket -->
+        <g id="chibiBody">
+          <path d="M96 205 L204 205 L214 295 L86 295 Z" fill="#090d16"/>
+          <path d="M126 208 Q150 222 174 208" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="3 2"/>
+
+          <!-- Left & Right Jacket Panels -->
+          <path d="M94 202 L134 202 L138 298 L82 298 Z" fill="url(#jacketGrad)" stroke="#334155" stroke-width="2"/>
+          <path d="M206 202 L166 202 L162 298 L218 298 Z" fill="url(#jacketGrad)" stroke="#334155" stroke-width="2"/>
+
+          <!-- Lapels -->
+          <polygon points="118,202 142,202 134,242 110,226" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+          <polygon points="182,202 158,202 166,242 190,226" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+          <circle cx="117" cy="222" r="2.2" fill="#cbd5e1"/>
+          <circle cx="183" cy="222" r="2.2" fill="#cbd5e1"/>
+
+          <!-- SADAJIWA Chest Patch -->
+          <rect x="171" y="246" width="24" height="28" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+          <path d="M183 252 L177 261 L183 261 L181 269 L189 259 L183 259 Z" fill="#facc15"/>
+
+          <!-- Belt -->
+          <rect x="84" y="284" width="132" height="14" fill="#020617" stroke="#334155" stroke-width="1.5"/>
+          <rect x="140" y="282" width="20" height="18" rx="3" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/>
+
+          <!-- Arms -->
+          <g id="armLeft">
+            <path d="M92 206 Q68 232 76 276 L98 274 Q94 242 104 222 Z" fill="url(#jacketGrad)" stroke="#334155" stroke-width="2"/>
+            <circle cx="86" cy="280" r="10" fill="#fde6d8" stroke="#d4a387" stroke-width="1.5"/>
+            <path d="M77 277 L95 277 L94 285 L78 285 Z" fill="#0f172a"/>
+          </g>
+
+          <g id="armRight">
+            <path d="M208 206 Q232 232 224 276 L202 274 Q206 242 196 222 Z" fill="url(#jacketGrad)" stroke="#334155" stroke-width="2"/>
+            <circle cx="214" cy="280" r="10" fill="#fde6d8" stroke="#d4a387" stroke-width="1.5"/>
+            <path d="M205 277 L223 277 L222 285 L206 285 Z" fill="#0f172a"/>
+          </g>
+        </g>
+
+        <!-- Neck -->
+        <rect x="138" y="186" width="24" height="22" rx="8" fill="#f5d0bc"/>
+
+        <!-- Head -->
+        <g id="chibiHead">
+          <circle cx="77" cy="144" r="12" fill="#fde6d8" stroke="#e2b49a" stroke-width="1.5"/>
+          <circle cx="223" cy="144" r="12" fill="#fde6d8" stroke="#e2b49a" stroke-width="1.5"/>
+          <circle cx="75" cy="154" r="2.2" fill="#38bdf8"/>
+
+          <path d="M82 115 C82 68, 218 68, 218 115 C218 166, 194 194, 150 194 C106 194, 82 166, 82 115 Z" fill="#fde6d8" stroke="#e2b49a" stroke-width="2"/>
+
+          <ellipse cx="104" cy="156" rx="9" ry="5" fill="#fda4af" opacity="0.45"/>
+          <ellipse cx="196" cy="156" rx="9" ry="5" fill="#fda4af" opacity="0.45"/>
+
+          <!-- Eyes -->
+          <g id="eyesNormal">
+            <ellipse cx="116" cy="140" rx="10" ry="12" fill="#0f172a"/>
+            <circle cx="116" cy="142" r="6" fill="#0284c7"/>
+            <circle cx="112" cy="135" r="3.5" fill="#ffffff"/>
+            <circle cx="120" cy="145" r="1.5" fill="#ffffff"/>
+
+            <ellipse cx="184" cy="140" rx="10" ry="12" fill="#0f172a"/>
+            <circle cx="184" cy="142" r="6" fill="#0284c7"/>
+            <circle cx="180" cy="135" r="3.5" fill="#ffffff"/>
+            <circle cx="188" cy="145" r="1.5" fill="#ffffff"/>
+          </g>
+
+          <g id="eyesSharp" style="display:none;">
+            <path d="M104 137 L128 141 L126 149 L106 147 Z" fill="#0f172a"/>
+            <circle cx="117" cy="142" r="4.5" fill="#38bdf8"/>
+            <circle cx="114" cy="139" r="2" fill="#ffffff"/>
+
+            <path d="M196 137 L172 141 L174 149 L194 147 Z" fill="#0f172a"/>
+            <circle cx="183" cy="142" r="4.5" fill="#38bdf8"/>
+            <circle cx="180" cy="139" r="2" fill="#ffffff"/>
+          </g>
+
+          <g id="eyesClosed" style="display:none;">
+            <path d="M105 141 Q116 148 127 141" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M173 141 Q184 148 195 141" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+          </g>
+
+          <!-- Eyebrows -->
+          <g id="browsNormal">
+            <path d="M102 123 Q116 120 129 125" fill="none" stroke="#a16207" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M198 123 Q184 120 171 125" fill="none" stroke="#a16207" stroke-width="3.5" stroke-linecap="round"/>
+          </g>
+          <g id="browsStern" style="display:none;">
+            <path d="M102 120 L130 129" fill="none" stroke="#a16207" stroke-width="4" stroke-linecap="round"/>
+            <path d="M198 120 L170 129" fill="none" stroke="#a16207" stroke-width="4" stroke-linecap="round"/>
+          </g>
+
+          <!-- Mouth States -->
+          <g id="mouthClosed">
+            <path d="M140 168 Q150 174 160 168" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g id="mouthSmirk" style="display:none;">
+            <path d="M139 170 Q151 174 163 165" fill="none" stroke="#9a3412" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g id="mouthOpen" style="display:none;">
+            <ellipse cx="150" cy="170" rx="8" ry="6.5" fill="#991b1b" stroke="#7f1d1d" stroke-width="1.5"/>
+            <path d="M144 173 Q150 176 156 173" fill="#f87171"/>
+          </g>
+
+          <!-- Blonde Hair -->
+          <path class="ahoge-sway" d="M148 56 Q162 36 178 46 Q164 52 158 62 Z" fill="url(#blondeGrad)" stroke="#a16207" stroke-width="1.5"/>
+
+          <path d="M74 122 C68 68, 114 48, 150 48 C186 48, 232 68, 226 122 L214 148 L206 114 L190 132 L176 106 L158 134 L144 108 L126 134 L110 108 L94 132 L86 114 L78 148 Z" fill="url(#blondeGrad)" stroke="#a16207" stroke-width="2" stroke-linejoin="round"/>
+
+          <path d="M106 72 Q128 62 146 72" fill="none" stroke="#fef9c3" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+          <path d="M162 72 Q180 62 196 72" fill="none" stroke="#fef9c3" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+
+          <!-- Sunglasses on Forehead -->
+          <g transform="translate(0, -4)">
+            <rect x="98" y="83" width="104" height="6" rx="3" fill="#0f172a"/>
+            <rect x="102" y="81" width="43" height="20" rx="5" fill="url(#visorGrad)" stroke="#0f172a" stroke-width="3"/>
+            <rect x="155" y="81" width="43" height="20" rx="5" fill="url(#visorGrad)" stroke="#0f172a" stroke-width="3"/>
+            <line x1="110" y1="85" x2="118" y2="96" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+            <line x1="163" y1="85" x2="171" y2="96" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round" opacity="0.75"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </main>
+
+  <!-- DIALOGUE & PRESENTATION PANEL -->
+  <section class="dialogue-box z-20 flex flex-col w-full max-w-4xl mx-auto rounded-t-2xl px-4 pt-3 pb-4 sm:px-6 sm:pb-5" style="height: 49dvh; min-height: 290px;">
+    
+    <!-- Speaker Nameplate & Slide Progress -->
+    <div class="flex items-center justify-between gap-2 mb-2.5">
+      <div class="flex items-center gap-2">
+        <div class="px-3 py-1 rounded-md bg-gradient-to-r from-sky-500/25 to-blue-900/40 border border-sky-400/50 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+          <span class="font-display font-bold text-xs sm:text-sm tracking-wider text-white">MAGNUS EDMUND</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30">PAMURBA</span>
+        </div>
+
+        <!-- Audio Visualizer -->
+        <div id="audioWave" class="flex items-center gap-1 px-2 py-1 rounded bg-slate-900/80 border border-slate-800">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+      </div>
+
+      <div class="text-xs font-display font-semibold text-slate-400">
+        Slide <span id="slideCounter" class="text-sky-400">1</span> / <span id="slideTotal">12</span>
+      </div>
+    </div>
+
+    <!-- Chapter Title -->
+    <div id="chapterTag" class="font-display font-bold text-xs sm:text-sm uppercase tracking-wider text-sky-400 mb-2 pb-1.5 border-b border-slate-800/90">
+      PENGENALAN SADAJIWA
+    </div>
+
+    <!-- Scrollable Dialogue Content -->
+    <div id="dialogueScroll" class="custom-scroll flex-1 overflow-y-auto pr-1.5 text-sm sm:text-base leading-relaxed text-slate-100 space-y-2.5" onclick="skipTypewriter()">
+      <div id="dialogueContent"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="flex items-center justify-between gap-3 pt-3 mt-2 border-t border-slate-800/80">
+      <button id="btnPrev" onclick="prevSlide()" class="btn-action flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-xs sm:text-sm font-semibold text-slate-300">
+        <span>←</span>
+        <span>Sebelumnya</span>
+      </button>
+
+      <div id="progressDots" class="hidden sm:flex items-center gap-1.5"></div>
+
+      <button id="btnNext" onclick="nextSlide()" class="btn-action flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-lg shadow-sky-500/25 text-xs sm:text-sm font-bold text-slate-950">
+        <span id="btnNextLabel">Lanjut</span>
+        <span>→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- CHAPTER DRAWER MODAL -->
+  <div id="chapterModal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+        <h3 class="font-display font-bold text-base text-sky-400 tracking-wide">DAFTAR MATERI SADAJIWA</h3>
+        <button onclick="toggleChapterMenu()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">✕</button>
+      </div>
+      <div id="chapterList" class="space-y-2 max-h-[60vh] overflow-y-auto custom-scroll pr-1"></div>
+    </div>
+  </div>
+
+  <!-- VOICE API KEY MODAL -->
+  <div id="voiceModal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-amber-500/40 rounded-2xl p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🎙️</span>
+          <div>
+            <h3 class="font-display font-bold text-sm text-amber-300 tracking-wide">SUARA OTOMATIS FISH AUDIO</h3>
+            <p class="text-[11px] text-slate-400">Model ID: 23cdfc77bc8e415c8cf407550045c537</p>
+          </div>
+        </div>
+        <button onclick="closeVoiceModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="space-y-3.5 text-xs text-slate-300">
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-slate-300">Fish Audio API Key:</span>
+            <span id="apiKeyStatus" class="text-[11px] text-slate-500">Belum diisi</span>
+          </div>
+          <input type="password" id="fishApiKeyInput" placeholder="Tempel API Key Fish Audio di sini..." class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Suara akan otomatis diproses melalui server Netlify Function dan disimpan di memori agar hemat kredit serta anti-blokir browser.
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between gap-2 pt-1">
+          <button onclick="clearVoiceSettings()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">
+            Hapus Key
+          </button>
+          <button onclick="saveVoiceSettings()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold shadow-lg shadow-amber-500/20">
+            Simpan & Putar Suara
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FISH_MODEL_ID = "23cdfc77bc8e415c8cf407550045c537";
+
+    const slides = [
+      {
+        chapter: "PENGENALAN SADAJIWA",
+        expression: "smirk",
+        layout: "text",
+        paragraphs: [
+          "Oke, sekarang gua mau ngenalin lebih jauh tentang SADAJIWA. Sebelum kalian melangkah lebih jauh, gua mau kalian tahu dulu tempat apa yang sekarang kalian pilih buat jadi bagian dari perjalanan kalian.",
+          "SADAJIWA bukan sekadar nama komunitas atau tempat buat kumpul, cari teman, dan pasang identitas. SADAJIWA dibangun dengan dasar persaudaraan, solidaritas, loyalitas, dan tanggung jawab.",
+          "Empat hal ini bukan pajangan atau sekadar tulisan di profil, tapi prinsip yang harus kalian pahami dan terapkan."
+        ],
+        speechText: "Oke, sekarang gua mau ngenalin lebih jauh tentang SADAJIWA. Sebelum kalian melangkah lebih jauh, gua mau kalian tahu dulu tempat apa yang sekarang kalian pilih buat jadi bagian dari perjalanan kalian. SADAJIWA bukan sekadar nama komunitas atau tempat buat kumpul, cari teman, dan pasang identitas. SADAJIWA dibangun dengan dasar persaudaraan, solidaritas, loyalitas, dan tanggung jawab. Empat hal ini bukan pajangan atau sekadar tulisan di profil, tapi prinsip yang harus kalian pahami dan terapkan."
+      },
+      {
+        chapter: "PENGENALAN SADAJIWA — IDENTITAS BUDAYA",
+        expression: "normal",
+        layout: "culture",
+        paragraphs: [
+          "Identitas SADAJIWA sendiri mengambil perpaduan unsur budaya Jawa, Jepang, Sunda, dan street culture USA.",
+          "Perpaduan ini menggambarkan karakter yang punya akar, pendirian, keberanian, dan kebebasan berekspresi tanpa kehilangan rasa hormat terhadap sesama."
+        ],
+        badges: ["JAWA • Akar & Tata Krama", "JEPANG • Kehormatan & Disiplin", "SUNDA • Persaudaraan & Silih Asah", "STREET CULTURE USA • Keberanian & Ekspresi"],
+        speechText: "Identitas SADAJIWA sendiri mengambil perpaduan unsur budaya Jawa, Jepang, Sunda, dan street culture USA. Perpaduan ini menggambarkan karakter yang punya akar, pendirian, keberanian, dan kebebasan berekspresi tanpa kehilangan rasa hormat terhadap sesama."
+      },
+      {
+        chapter: "PENGENALAN SADAJIWA — TINGKATAN KEDUDUKAN",
+        expression: "sharp",
+        layout: "ranks",
+        intro: "Di sini ada tingkatan kedudukan yang harus kalian lalui:",
+        ranks: [
+          { title: "CALON SADA", desc: "Anggota yang sedang menjalani masa pengenalan dan orientasi." },
+          { title: "SADA", desc: "Anggota resmi yang sudah menyelesaikan proses orientasi dan dinyatakan layak bergabung." },
+          { title: "TETUA", desc: "Anggota senior yang memiliki pengalaman, kedewasaan, dan tanggung jawab lebih dalam membimbing anggota." },
+          { title: "PAMONG", desc: "Pengurus yang bertugas mengelola, mengarahkan, dan menjaga keberlangsungan organisasi." },
+          { title: "PAMURBA", desc: "Pemegang otoritas tertinggi sekaligus pendiri SADAJIWA." }
+        ],
+        outro: "Gua mau kalian paham kalau setiap kedudukan punya tanggung jawabnya masing-masing. Nggak ada yang cuma sekadar gelar buat gaya-gayaan.",
+        speechText: "Di sini ada tingkatan kedudukan yang harus kalian lalui: CALON SADA, anggota yang sedang menjalani masa pengenalan dan orientasi. SADA, anggota resmi yang sudah menyelesaikan proses orientasi dan dinyatakan layak bergabung. TETUA, anggota senior yang memiliki pengalaman, kedewasaan, dan tanggung jawab lebih dalam membimbing anggota. PAMONG, pengurus yang bertugas mengelola, mengarahkan, dan menjaga keberlangsungan organisasi. PAMURBA, pemegang otoritas tertinggi sekaligus pendiri SADAJIWA. Gua mau kalian paham kalau setiap kedudukan punya tanggung jawabnya masing-masing. Nggak ada yang cuma sekadar gelar buat gaya-gayaan."
+      },
+      {
+        chapter: "APA YANG HARUS KALIAN LAKUKAN SETELAH MENJADI SADA?",
+        expression: "normal",
+        layout: "text",
+        paragraphs: [
+          "Ketika nantinya kalian resmi menyandang kedudukan sebagai SADA, tanggung jawab kalian nggak berhenti setelah pelantikan selesai.",
+          "Justru dari situ perjalanan kalian dimulai. Berikut beberapa hal yang menjadi tanggung jawab SADA:"
+        ],
+        speechText: "Apa yang harus kalian lakukan setelah menjadi SADA? Ketika nantinya kalian resmi menyandang kedudukan sebagai SADA, tanggung jawab kalian nggak berhenti setelah pelantikan selesai. Justru dari situ perjalanan kalian dimulai. Berikut beberapa hal yang menjadi tanggung jawab SADA."
+      },
+      {
+        chapter: "TANGGUNG JAWAB SADA (BAGIAN 1)",
+        expression: "sharp",
+        layout: "list",
+        items: [
+          { num: "1", title: "Menjaga nama baik SADAJIWA.", desc: "Jangan melakukan hal yang bisa merusak identitas dan reputasi komunitas." },
+          { num: "2", title: "Menjaga solidaritas.", desc: "Bangun hubungan yang baik dengan sesama anggota, jangan menciptakan perpecahan atau membawa konflik pribadi ke dalam komunitas." },
+          { num: "3", title: "Aktif berpartisipasi.", desc: "Ikut serta dalam kegiatan, agenda, diskusi, dan aktivitas yang diselenggarakan SADAJIWA." },
+          { num: "4", title: "Mematuhi aturan.", desc: "Hormati ketentuan dan arahan pengurus yang berlaku." }
+        ],
+        speechText: "Satu, menjaga nama baik SADAJIWA. Jangan melakukan hal yang bisa merusak identitas dan reputasi komunitas. Dua, menjaga solidaritas. Bangun hubungan yang baik dengan sesama anggota, jangan menciptakan perpecahan atau membawa konflik pribadi ke dalam komunitas. Tiga, aktif berpartisipasi. Ikut serta dalam kegiatan, agenda, diskusi, dan aktivitas yang diselenggarakan SADAJIWA. Empat, mematuhi aturan. Hormati ketentuan dan arahan pengurus yang berlaku."
+      },
+      {
+        chapter: "TANGGUNG JAWAB SADA (BAGIAN 2)",
+        expression: "sharp",
+        layout: "list",
+        items: [
+          { num: "5", title: "Menjaga komunikasi.", desc: "Jangan menghilang tanpa kabar ketika ada agenda atau tanggung jawab yang harus diselesaikan." },
+          { num: "6", title: "Menghargai kedudukan.", desc: "Pahami struktur organisasi dan hargai tugas setiap orang tanpa merasa lebih tinggi dari yang lain." },
+          { num: "7", title: "Menjadi contoh yang baik.", desc: "Tunjukkan sikap yang pantas sebagai anggota resmi, terutama ketika berinteraksi dengan CALON SADA." }
+        ],
+        speechText: "Lima, menjaga komunikasi. Jangan menghilang tanpa kabar ketika ada agenda atau tanggung jawab yang harus diselesaikan. Enam, menghargai kedudukan. Pahami struktur organisasi dan hargai tugas setiap orang tanpa merasa lebih tinggi dari yang lain. Tujuh, menjadi contoh yang baik. Tunjukkan sikap yang pantas sebagai anggota resmi, terutama ketika berinteraksi dengan CALON SADA."
+      },
+      {
+        chapter: "KOMITMEN SEBAGAI SADA",
+        expression: "closed",
+        layout: "text",
+        paragraphs: [
+          "Ingat, menjadi SADA bukan berarti kalian sudah berada di puncak. Kalian baru menyelesaikan satu tahap. Masih ada proses panjang untuk berkembang, belajar, dan membuktikan tanggung jawab kalian di SADAJIWA.",
+          "Gua nggak minta kalian jadi orang yang sempurna. Gua cuma mau kalian punya komitmen, bisa dipercaya, dan nggak lari dari tanggung jawab yang udah kalian ambil."
+        ],
+        speechText: "Ingat, menjadi SADA bukan berarti kalian sudah berada di puncak. Kalian baru menyelesaikan satu tahap. Masih ada proses panjang untuk berkembang, belajar, dan membuktikan tanggung jawab kalian di SADAJIWA. Gua nggak minta kalian jadi orang yang sempurna. Gua cuma mau kalian punya komitmen, bisa dipercaya, dan nggak lari dari tanggung jawab yang udah kalian ambil."
+      },
+      {
+        chapter: "PERAN DAN TANGGUNG JAWAB SADA",
+        expression: "normal",
+        layout: "text",
+        paragraphs: [
+          "Sekarang gua mau bahas satu hal yang nantinya bakal jadi tanggung jawab kalian ketika sudah resmi menjadi SADA.",
+          "Di SADAJIWA, yang bertugas mengurus CALON SADA bukan PAMONG secara langsung untuk seluruh kegiatan sehari-hari, melainkan SADA. Jadi, ketika nanti ada pembukaan penerimaan anggota baru, kalian yang sudah menjadi SADA akan punya tanggung jawab untuk mendampingi, mengarahkan, dan membantu mereka melewati masa orientasi.",
+          "Artinya, kalian nggak cuma menjadi anggota yang menikmati keberadaan komunitas, tetapi juga ikut menjaga bagaimana komunitas ini berkembang."
+        ],
+        speechText: "Peran dan tanggung jawab SADA. Sekarang gua mau bahas satu hal yang nantinya bakal jadi tanggung jawab kalian ketika sudah resmi menjadi SADA. Di SADAJIWA, yang bertugas mengurus CALON SADA bukan PAMONG secara langsung untuk seluruh kegiatan sehari-hari, melainkan SADA. Jadi, ketika nanti ada pembukaan penerimaan anggota baru, kalian yang sudah menjadi SADA akan punya tanggung jawab untuk mendampingi, mengarahkan, dan membantu mereka melewati masa orientasi. Artinya, kalian nggak cuma menjadi anggota yang menikmati keberadaan komunitas, tetapi juga ikut menjaga bagaimana komunitas ini berkembang."
+      },
+      {
+        chapter: "SIKAP SADA MENGHADAPI CALON SADA (1–3)",
+        expression: "sharp",
+        layout: "list",
+        intro: "Sikap yang harus dimiliki SADA ketika menghadapi CALON SADA:",
+        items: [
+          { num: "1", title: "Tegas, bukan semena-mena.", desc: "Kalian boleh bersikap galak ketika diperlukan, tetapi jangan menjadikan kedudukan sebagai alasan untuk merendahkan atau mempermalukan orang lain." },
+          { num: "2", title: "Bertanggung jawab.", desc: "Kalau sudah diberi tugas untuk mengurus CALON SADA, jangan setengah-setengah. Pastikan mereka mendapatkan arahan dan informasi yang jelas." },
+          { num: "3", title: "Sabar dalam membimbing.", desc: "Nggak semua orang langsung paham. Kalau ada yang melakukan kesalahan, tegur dan jelaskan apa yang harus diperbaiki." }
+        ],
+        speechText: "Sikap yang harus dimiliki SADA ketika menghadapi CALON SADA: Satu, tegas, bukan semena-mena. Kalian boleh bersikap galak ketika diperlukan, tetapi jangan menjadikan kedudukan sebagai alasan untuk merendahkan atau mempermalukan orang lain. Dua, bertanggung jawab. Kalau sudah diberi tugas untuk mengurus CALON SADA, jangan setengah-setengah. Pastikan mereka mendapatkan arahan dan informasi yang jelas. Tiga, sabar dalam membimbing. Nggak semua orang langsung paham. Kalau ada yang melakukan kesalahan, tegur dan jelaskan apa yang harus diperbaiki."
+      },
+      {
+        chapter: "SIKAP SADA MENGHADAPI CALON SADA (4–6)",
+        expression: "sharp",
+        layout: "list",
+        items: [
+          { num: "4", title: "Menjadi contoh.", desc: "Jangan menyuruh CALON SADA disiplin kalau kalian sendiri nggak bisa menunjukkan kedisiplinan." },
+          { num: "5", title: "Adil terhadap semua anggota.", desc: "Jangan pilih kasih, jangan membeda-bedakan, dan jangan memberikan perlakuan khusus hanya karena kedekatan pribadi." },
+          { num: "6", title: "Menjaga batas kedudukan.", desc: "Hormati CALON SADA sebagai sesama anggota komunitas yang sedang belajar. Tegas boleh, tetapi tetap ada batasnya." }
+        ],
+        speechText: "Empat, menjadi contoh. Jangan menyuruh CALON SADA disiplin kalau kalian sendiri nggak bisa menunjukkan kedisiplinan. Lima, adil terhadap semua anggota. Jangan pilih kasih, jangan membeda-bedakan, dan jangan memberikan perlakuan khusus hanya karena kedekatan pribadi. Enam, menjaga batas kedudukan. Hormati CALON SADA sebagai sesama anggota komunitas yang sedang belajar. Tegas boleh, tetapi tetap ada batasnya."
+      },
+      {
+        chapter: "APA SAJA YANG HARUS DILAKUKAN SADA?",
+        expression: "normal",
+        layout: "checklist",
+        intro: "Apa saja yang harus dilakukan SADA?",
+        bullets: [
+          "Mendampingi CALON SADA selama masa orientasi.",
+          "Menyampaikan informasi dan arahan dari PAMONG.",
+          "Memantau keaktifan serta kedisiplinan CALON SADA.",
+          "Membantu menjawab pertanyaan dan mengatasi kendala mereka.",
+          "Mengingatkan apabila ada aturan yang dilanggar.",
+          "Melaporkan perkembangan dan evaluasi CALON SADA kepada PAMONG.",
+          "Membantu memastikan setiap CALON SADA mendapatkan kesempatan dan perlakuan yang adil."
+        ],
+        speechText: "Apa saja yang harus dilakukan SADA? Mendampingi CALON SADA selama masa orientasi. Menyampaikan informasi dan arahan dari PAMONG. Memantau keaktifan serta kedisiplinan CALON SADA. Membantu menjawab pertanyaan dan mengatasi kendala mereka. Mengingatkan apabila ada aturan yang dilanggar. Melaporkan perkembangan dan evaluasi CALON SADA kepada PAMONG. Membantu memastikan setiap CALON SADA mendapatkan kesempatan dan perlakuan yang adil."
+      },
+      {
+        chapter: "PENUTUP — LEAD BY EXAMPLE, NOT BY EGO",
+        expression: "smirk",
+        layout: "quote",
+        paragraphs: [
+          "Gua mau kalian ingat, ketika nanti ada anggota baru yang masuk, kalian adalah orang-orang pertama yang akan mereka lihat sebagai gambaran SADAJIWA. Kalau kalian memperlakukan mereka dengan buruk, jangan heran kalau mereka punya pandangan yang buruk juga terhadap komunitas ini.",
+          "Jangan merasa paling tinggi hanya karena kalian sudah lebih dulu menjadi SADA. Kalian pernah berada di posisi mereka, pernah nggak tahu apa-apa, dan pernah membutuhkan arahan dari orang lain."
+        ],
+        quote: "Lead by example, not by ego.",
+        closing: "Gua pengen SADAJIWA punya anggota yang bisa dihormati karena sikapnya, bukan ditakuti karena kedudukannya. That's your responsibility as SADA.",
+        speechText: "Gua mau kalian ingat, ketika nanti ada anggota baru yang masuk, kalian adalah orang-orang pertama yang akan mereka lihat sebagai gambaran SADAJIWA. Kalau kalian memperlakukan mereka dengan buruk, jangan heran kalau mereka punya pandangan yang buruk juga terhadap komunitas ini. Jangan merasa paling tinggi hanya karena kalian sudah lebih dulu menjadi SADA. Kalian pernah berada di posisi mereka, pernah nggak tahu apa-apa, dan pernah membutuhkan arahan dari orang lain. Lead by example, not by ego. Gua pengen SADAJIWA punya anggota yang bisa dihormati karena sikapnya, bukan ditakuti karena kedudukannya. That's your responsibility as SADA."
+      }
+    ];
+
+    let currentSlide = 0;
+    let isTyping = false;
+    let typeTimer = null;
+    let mouthTimer = null;
+    let isMuted = false;
+    let activeAudio = null;
+    let audioCache = {};
+    let currentPlaybackId = 0;
+    let fishApiKey = "";
+
+    try {
+      fishApiKey = localStorage.getItem("sadajiwa_fish_key") || "";
+    } catch (e) {}
+
+    function setStatus(type, msg) {
+      const dot = document.getElementById("statusDot");
+      const text = document.getElementById("statusText");
+      if (!dot || !text) return;
+      text.textContent = msg;
+      dot.className = "w-2 h-2 rounded-full shrink-0 " + (
+        type === "ok" ? "bg-emerald-400" :
+        type === "loading" ? "bg-sky-400 animate-ping" :
+        "bg-amber-400"
+      );
+    }
+
+    function setExpression(expr) {
+      const eyesNormal = document.getElementById("eyesNormal");
+      const eyesSharp = document.getElementById("eyesSharp");
+      const eyesClosed = document.getElementById("eyesClosed");
+      const browsNormal = document.getElementById("browsNormal");
+      const browsStern = document.getElementById("browsStern");
+
+      eyesNormal.style.display = "none";
+      eyesSharp.style.display = "none";
+      eyesClosed.style.display = "none";
+      browsNormal.style.display = "none";
+      browsStern.style.display = "none";
+
+      if (expr === "sharp") {
+        eyesSharp.style.display = "block";
+        browsStern.style.display = "block";
+      } else if (expr === "closed") {
+        eyesClosed.style.display = "block";
+        browsNormal.style.display = "block";
+      } else {
+        eyesNormal.style.display = "block";
+        browsNormal.style.display = "block";
+      }
+      setMouth(expr === "smirk" ? "smirk" : "closed");
+    }
+
+    function setMouth(state) {
+      document.getElementById("mouthClosed").style.display = state === "closed" ? "block" : "none";
+      document.getElementById("mouthSmirk").style.display = state === "smirk" ? "block" : "none";
+      document.getElementById("mouthOpen").style.display = state === "open" ? "block" : "none";
+    }
+
+    function startTalkingAnimation() {
+      const wrapper = document.getElementById("chibiWrapper");
+      const wave = document.getElementById("audioWave");
+      wrapper.classList.remove("chibi-idle");
+      wrapper.classList.add("chibi-talking");
+      wave.classList.add("speaking");
+
+      if (mouthTimer) clearInterval(mouthTimer);
+      let toggle = false;
+      mouthTimer = setInterval(() => {
+        toggle = !toggle;
+        setMouth(toggle ? "open" : "closed");
+      }, 145);
+    }
+
+    function stopTalkingAnimation() {
+      const wrapper = document.getElementById("chibiWrapper");
+      const wave = document.getElementById("audioWave");
+      wrapper.classList.remove("chibi-talking");
+      wrapper.classList.add("chibi-idle");
+      wave.classList.remove("speaking");
+
+      if (mouthTimer) {
+        clearInterval(mouthTimer);
+        mouthTimer = null;
+      }
+      const expr = slides[currentSlide].expression;
+      setMouth(expr === "smirk" ? "smirk" : "closed");
+    }
+
+    function stopAllAudio() {
+      currentPlaybackId++;
+      if (activeAudio) {
+        try {
+          activeAudio.pause();
+          activeAudio.currentTime = 0;
+        } catch (e) {}
+        activeAudio = null;
+      }
+      if ("speechSynthesis" in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (e) {}
+      }
+      stopTalkingAnimation();
+    }
+
+    async function fetchFishAudioFromNetlify(text, apiKey) {
+      const response = await fetch("/.netlify/functions/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: text,
+          apiKey: apiKey,
+          referenceId: FISH_MODEL_ID
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Server TTS gagal: " + response.status);
+      }
+      const data = await response.json();
+      if (!data.audioBase64) throw new Error("Data audio kosong");
+      return "data:audio/mp3;base64," + data.audioBase64;
+    }
+
+    function playAudioElement(url, playId) {
+      return new Promise((resolve, reject) => {
+        if (playId !== currentPlaybackId) return reject("cancelled");
+        const audio = new Audio(url);
+        activeAudio = audio;
+
+        audio.onplay = () => {
+          if (playId === currentPlaybackId) startTalkingAnimation();
+        };
+        audio.onended = () => {
+          if (playId === currentPlaybackId) stopTalkingAnimation();
+          resolve();
+        };
+        audio.onerror = () => {
+          if (playId === currentPlaybackId) stopTalkingAnimation();
+          reject("Audio playback error");
+        };
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => reject(err));
+        }
+      });
+    }
+
+    function playBrowserTTS(text, playId) {
+      if (!("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "id-ID";
+        utter.rate = 1.0;
+        utter.pitch = 0.85;
+
+        const voices = window.speechSynthesis.getVoices();
+        const idMale = voices.find(v => v.lang.includes("id") && /male|ardhi|pria|damayanti/i.test(v.name))
+                    || voices.find(v => v.lang.includes("id"));
+        if (idMale) utter.voice = idMale;
+
+        utter.onstart = () => {
+          if (playId === currentPlaybackId) {
+            startTalkingAnimation();
+            setStatus("ok", "Memutar suara cadangan perangkat");
+          }
+        };
+        utter.onend = () => {
+          if (playId === currentPlaybackId) stopTalkingAnimation();
+        };
+        utter.onerror = () => {
+          if (playId === currentPlaybackId) stopTalkingAnimation();
+        };
+
+        window.speechSynthesis.speak(utter);
+      } catch (e) {
+        stopTalkingAnimation();
+      }
+    }
+
+    async function speakSlide(index) {
+      stopAllAudio();
+      if (isMuted) {
+        setStatus("warn", "Suara dalam mode Mute");
+        return;
+      }
+
+      const playId = currentPlaybackId;
+      const slide = slides[index];
+
+      if (fishApiKey) {
+        if (audioCache[index]) {
+          try {
+            setStatus("ok", "Memutar suara Magnus Edmund (Fish Audio)");
+            await playAudioElement(audioCache[index], playId);
+            return;
+          } catch (e) {}
+        }
+
+        setStatus("loading", "Memproses suara Fish Audio via server...");
+        try {
+          const audioDataUrl = await fetchFishAudioFromNetlify(slide.speechText, fishApiKey);
+          if (playId !== currentPlaybackId) return;
+          audioCache[index] = audioDataUrl;
+          setStatus("ok", "Memutar suara Magnus Edmund (Fish Audio)");
+          await playAudioElement(audioDataUrl, playId);
+          return;
+        } catch (err) {
+          if (playId !== currentPlaybackId) return;
+          setStatus("warn", "Pastikan deploy di Netlify & API Key benar. Memakai suara cadangan...");
+        }
+      } else {
+        setStatus("warn", "Masukkan Fish Audio API Key di tombol API Key untuk suara asli");
+      }
+
+      if (playId === currentPlaybackId) {
+        playBrowserTTS(slide.speechText, playId);
+      }
+    }
+
+    function buildSlideHTML(slide) {
+      if (slide.layout === "culture") {
+        return `
+          <p>${slide.paragraphs[0]}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 my-2.5">
+            ${slide.badges.map(b => `
+              <div class="px-3 py-2 rounded-lg bg-sky-500/10 border border-sky-400/30 text-xs sm:text-sm font-semibold text-sky-200">
+                ${b}
+              </div>
+            `).join("")}
+          </div>
+          <p>${slide.paragraphs[1]}</p>
+        `;
+      }
+
+      if (slide.layout === "ranks") {
+        return `
+          <p class="font-semibold text-sky-200">${slide.intro}</p>
+          <div class="space-y-2 my-2">
+            ${slide.ranks.map(r => `
+              <div class="rank-card px-3 py-2 rounded-r-lg">
+                <span class="font-display font-bold text-amber-300 text-xs sm:text-sm tracking-wider">${r.title}:</span>
+                <span class="text-slate-200 text-xs sm:text-sm"> ${r.desc}</span>
+              </div>
+            `).join("")}
+          </div>
+          <p class="text-slate-300 italic">${slide.outro}</p>
+        `;
+      }
+
+      if (slide.layout === "list") {
+        return `
+          ${slide.intro ? `<p class="font-semibold text-sky-200 mb-2">${slide.intro}</p>` : ""}
+          <div class="space-y-2">
+            ${slide.items.map(it => `
+              <div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
+                <span class="w-6 h-6 rounded-md bg-sky-500/20 border border-sky-400/40 text-sky-300 font-display font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">${it.num}</span>
+                <div class="text-xs sm:text-sm">
+                  <strong class="text-white">${it.title}</strong>
+                  <span class="text-slate-300"> ${it.desc}</span>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      }
+
+      if (slide.layout === "checklist") {
+        return `
+          <p class="font-semibold text-sky-200 mb-2">${slide.intro}</p>
+          <ul class="space-y-1.5">
+            ${slide.bullets.map(b => `
+              <li class="flex items-start gap-2 text-xs sm:text-sm text-slate-200">
+                <span class="text-amber-400 font-bold mt-0.5">▸</span>
+                <span>${b}</span>
+              </li>
+            `).join("")}
+          </ul>
+        `;
+      }
+
+      if (slide.layout === "quote") {
+        return `
+          ${slide.paragraphs.map(p => `<p>${p}</p>`).join("")}
+          <div class="my-3 px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-sky-500/15 to-transparent border-l-4 border-amber-400">
+            <p class="font-display font-bold text-base sm:text-lg text-amber-300 tracking-wide">"${slide.quote}"</p>
+          </div>
+          <p class="font-medium text-white">${slide.closing}</p>
+        `;
+      }
+
+      return slide.paragraphs.map(p => `<p>${p}</p>`).join("");
+    }
+
+    function renderSlide(index, autoAudio = true) {
+      currentSlide = index;
+      const slide = slides[index];
+
+      document.getElementById("slideCounter").textContent = index + 1;
+      document.getElementById("slideTotal").textContent = slides.length;
+      document.getElementById("chapterTag").textContent = slide.chapter;
+      document.getElementById("btnPrev").disabled = index === 0;
+      document.getElementById("btnNextLabel").textContent = index === slides.length - 1 ? "Selesai" : "Lanjut";
+
+      setExpression(slide.expression);
+      renderProgressDots();
+
+      const container = document.getElementById("dialogueContent");
+      const scrollBox = document.getElementById("dialogueScroll");
+      scrollBox.scrollTop = 0;
+
+      if (typeTimer) clearInterval(typeTimer);
+
+      const fullHTML = buildSlideHTML(slide);
+      if (slide.layout !== "text") {
+        container.innerHTML = fullHTML;
+        isTyping = false;
+      } else {
+        isTyping = true;
+        const combinedText = slide.paragraphs.join("\n\n");
+        let charIdx = 0;
+        container.innerHTML = `<span class="cursor-blink"></span>`;
+
+        typeTimer = setInterval(() => {
+          charIdx += 3;
+          if (charIdx >= combinedText.length) {
+            clearInterval(typeTimer);
+            isTyping = false;
+            container.innerHTML = fullHTML;
+          } else {
+            const slice = combinedText.slice(0, charIdx)
+              .split("\n\n")
+              .map(p => `<p>${p}</p>`)
+              .join("");
+            container.innerHTML = slice + `<span class="cursor-blink"></span>`;
+            scrollBox.scrollTop = scrollBox.scrollHeight;
+          }
+        }, 16);
+      }
+
+      if (autoAudio) {
+        speakSlide(index);
+      }
+    }
+
+    function skipTypewriter() {
+      if (isTyping) {
+        clearInterval(typeTimer);
+        isTyping = false;
+        document.getElementById("dialogueContent").innerHTML = buildSlideHTML(slides[currentSlide]);
+      }
+    }
+
+    function handleStageClick() {
+      if (isTyping) {
+        skipTypewriter();
+      } else {
+        speakSlide(currentSlide);
+      }
+    }
+
+    function nextSlide() {
+      if (isTyping) {
+        skipTypewriter();
+        return;
+      }
+      if (currentSlide < slides.length - 1) {
+        renderSlide(currentSlide + 1, true);
+      } else {
+        renderSlide(0, true);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        renderSlide(currentSlide - 1, true);
+      }
+    }
+
+    function replayCurrentAudio() {
+      speakSlide(currentSlide);
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      document.getElementById("muteIcon").textContent = isMuted ? "🔇" : "🔊";
+      if (isMuted) {
+        stopAllAudio();
+        setStatus("warn", "Suara dimatikan (Mute)");
+      } else {
+        speakSlide(currentSlide);
+      }
+    }
+
+    function renderProgressDots() {
+      const container = document.getElementById("progressDots");
+      container.innerHTML = slides.map((_, idx) => `
+        <button onclick="renderSlide(${idx}, true)" class="h-2 rounded-full transition-all ${idx === currentSlide ? 'w-6 bg-sky-400' : 'w-2 bg-slate-700 hover:bg-slate-500'}"></button>
+      `).join("");
+    }
+
+    function toggleChapterMenu() {
+      const modal = document.getElementById("chapterModal");
+      const list = document.getElementById("chapterList");
+      if (modal.classList.contains("hidden")) {
+        list.innerHTML = slides.map((s, idx) => `
+          <button onclick="renderSlide(${idx}, true); toggleChapterMenu();" class="w-full text-left px-3.5 py-2.5 rounded-xl border transition flex items-center justify-between ${idx === currentSlide ? 'bg-sky-500/20 border-sky-400 text-white' : 'bg-slate-950/70 border-slate-800 text-slate-300 hover:border-slate-600'}">
+            <div>
+              <div class="text-[10px] font-display text-sky-400">SLIDE ${idx + 1}</div>
+              <div class="text-xs font-semibold">${s.chapter}</div>
+            </div>
+            <span class="text-xs text-slate-500">→</span>
+          </button>
+        `).join("");
+        modal.classList.remove("hidden");
+      } else {
+        modal.classList.add("hidden");
+      }
+    }
+
+    function openVoiceModal() {
+      document.getElementById("fishApiKeyInput").value = fishApiKey;
+      updateApiKeyBadge();
+      document.getElementById("voiceModal").classList.remove("hidden");
+    }
+
+    function closeVoiceModal() {
+      document.getElementById("voiceModal").classList.add("hidden");
+    }
+
+    function updateApiKeyBadge() {
+      const badge = document.getElementById("apiKeyStatus");
+      if (fishApiKey) {
+        badge.textContent = "Tersimpan ✓";
+        badge.className = "text-[11px] text-emerald-400 font-semibold";
+      } else {
+        badge.textContent = "Belum diisi";
+        badge.className = "text-[11px] text-slate-500";
+      }
+    }
+
+    function saveVoiceSettings() {
+      fishApiKey = document.getElementById("fishApiKeyInput").value.trim();
+      try {
+        localStorage.setItem("sadajiwa_fish_key", fishApiKey);
+      } catch (e) {}
+      audioCache = {};
+      closeVoiceModal();
+      speakSlide(currentSlide);
+    }
+
+    function clearVoiceSettings() {
+      fishApiKey = "";
+      audioCache = {};
+      try {
+        localStorage.removeItem("sadajiwa_fish_key");
+      } catch (e) {}
+      document.getElementById("fishApiKeyInput").value = "";
+      updateApiKeyBadge();
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderSlide(0, false);
+    });
+  </script>
+</body>
+</html>
