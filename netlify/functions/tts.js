@@ -11,7 +11,7 @@ exports.handler = async (event) => {
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "model": "speech-1.6"
+        "model": "s1"
       },
       body: JSON.stringify({
         text: text,
@@ -23,7 +23,11 @@ exports.handler = async (event) => {
 
     if (!response.ok) {
       const errText = await response.text();
-      return { statusCode: response.status, body: errText };
+      return {
+        statusCode: response.status,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: `Fish API (${response.status}): ${errText}` })
+      };
     }
 
     const arrayBuffer = await response.arrayBuffer();
@@ -38,6 +42,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({ audioBase64: base64Audio })
     };
   } catch (err) {
-    return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: err.message })
+    };
   }
 };
