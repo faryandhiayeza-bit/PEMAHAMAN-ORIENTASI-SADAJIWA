@@ -11,7 +11,7 @@ exports.handler = async (event) => {
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "model": "s1"
+        "model": "s2.1-pro-free"
       },
       body: JSON.stringify({
         text: text,
