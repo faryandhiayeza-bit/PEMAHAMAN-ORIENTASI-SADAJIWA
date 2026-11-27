@@ -437,19 +437,25 @@
 
   <script>
     const FISH_MODEL_ID = "23cdfc77bc8e415c8cf407550045c537";
-    const BGM_FILE = "bgm.mp3";     // Nama file musik di folder utama GitHub
-    const MAGNUS_VOLUME = 1.0;      // Suara Magnus 100%
-    const BGM_VOLUME = 0.4;         // Suara musik 40% dari suara Magnus
+    const BGM_FILE = "bgm.mp3";
+    const MAGNUS_VOLUME = 1.0;          // Suara Magnus 100%
+    const BGM_IDLE_VOLUME = 0.22;       // Volume musik saat Magnus diam (22%)
+    const BGM_TALKING_VOLUME = 0.10;    // Volume musik otomatis mengecil saat Magnus bicara (10%)
 
     const bgmAudio = new Audio(BGM_FILE);
     bgmAudio.loop = true;
-    bgmAudio.volume = BGM_VOLUME;
+    bgmAudio.volume = BGM_IDLE_VOLUME;
     let isBgmMuted = false;
+
+    function setBgmDucking(isMagnusTalking) {
+      if (isBgmMuted) return;
+      bgmAudio.volume = isMagnusTalking ? BGM_TALKING_VOLUME : BGM_IDLE_VOLUME;
+    }
 
     function ensureBgmPlaying() {
       if (isBgmMuted) return;
-      bgmAudio.volume = BGM_VOLUME;
       if (bgmAudio.paused) {
+        bgmAudio.volume = BGM_IDLE_VOLUME;
         bgmAudio.play().catch(() => {});
       }
     }
@@ -667,6 +673,7 @@
     }
 
     function startTalkingAnimation() {
+      setBgmDucking(true);
       const wrapper = document.getElementById("chibiWrapper");
       const wave = document.getElementById("audioWave");
       wrapper.classList.remove("chibi-idle");
@@ -682,6 +689,7 @@
     }
 
     function stopTalkingAnimation() {
+      setBgmDucking(false);
       const wrapper = document.getElementById("chibiWrapper");
       const wave = document.getElementById("audioWave");
       wrapper.classList.remove("chibi-talking");
