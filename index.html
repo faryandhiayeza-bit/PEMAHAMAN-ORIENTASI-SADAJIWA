@@ -177,7 +177,11 @@
         <span class="hidden sm:inline">Ulangi</span>
       </button>
 
-      <button id="btnToggleMute" onclick="toggleMute()" title="Suara On/Off" class="btn-action flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-sky-300">
+      <button id="btnToggleBgm" onclick="toggleBgm()" title="Musik Latar On/Off" class="btn-action flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-emerald-300">
+        <span id="bgmIcon">🎵</span>
+      </button>
+
+      <button id="btnToggleMute" onclick="toggleMute()" title="Suara Magnus On/Off" class="btn-action flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-sky-300">
         <span id="muteIcon">🔊</span>
       </button>
 
@@ -404,7 +408,7 @@
       <div id="dialogueContent"></div>
     </div>
 
-    <!-- Bottom Navigation (Dinaikkan agar tidak tertutup lencana Netlify) -->
+    <!-- Bottom Navigation -->
     <div class="relative z-40 flex items-center justify-between gap-3 pt-3 mt-2 border-t border-slate-800/80">
       <button id="btnPrev" onclick="prevSlide()" class="btn-action flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-xs sm:text-sm font-semibold text-slate-300">
         <span>←</span>
@@ -433,6 +437,36 @@
 
   <script>
     const FISH_MODEL_ID = "23cdfc77bc8e415c8cf407550045c537";
+    const BGM_FILE = "bgm.mp3";     // Nama file musik di folder utama GitHub
+    const MAGNUS_VOLUME = 1.0;      // Suara Magnus 100%
+    const BGM_VOLUME = 0.4;         // Suara musik 40% dari suara Magnus
+
+    const bgmAudio = new Audio(BGM_FILE);
+    bgmAudio.loop = true;
+    bgmAudio.volume = BGM_VOLUME;
+    let isBgmMuted = false;
+
+    function ensureBgmPlaying() {
+      if (isBgmMuted) return;
+      bgmAudio.volume = BGM_VOLUME;
+      if (bgmAudio.paused) {
+        bgmAudio.play().catch(() => {});
+      }
+    }
+
+    function toggleBgm() {
+      isBgmMuted = !isBgmMuted;
+      const icon = document.getElementById("bgmIcon");
+      if (isBgmMuted) {
+        bgmAudio.pause();
+        icon.textContent = "🔇";
+        icon.style.opacity = "0.5";
+      } else {
+        icon.textContent = "🎵";
+        icon.style.opacity = "1";
+        ensureBgmPlaying();
+      }
+    }
 
     const slides = [
       {
@@ -701,6 +735,7 @@
       return new Promise((resolve, reject) => {
         if (playId !== currentPlaybackId) return reject("cancelled");
         const audio = new Audio(url);
+        audio.volume = MAGNUS_VOLUME;
         activeAudio = audio;
 
         audio.onplay = () => {
@@ -730,6 +765,7 @@
         utter.lang = "id-ID";
         utter.rate = 1.0;
         utter.pitch = 0.85;
+        utter.volume = MAGNUS_VOLUME;
 
         const voices = window.speechSynthesis.getVoices();
         const idMale = voices.find(v => v.lang.includes("id") && /male|ardhi|pria|damayanti/i.test(v.name))
@@ -753,9 +789,10 @@
     }
 
     async function speakSlide(index) {
+      ensureBgmPlaying();
       stopAllAudio();
       if (isMuted) {
-        setStatus("warn", "Suara dalam mode Mute");
+        setStatus("warn", "Suara Magnus dalam mode Mute");
         return;
       }
 
@@ -914,6 +951,7 @@
     }
 
     function skipTypewriter() {
+      ensureBgmPlaying();
       if (isTyping) {
         clearInterval(typeTimer);
         isTyping = false;
@@ -922,6 +960,7 @@
     }
 
     function handleStageClick() {
+      ensureBgmPlaying();
       if (isTyping) {
         skipTypewriter();
       } else {
@@ -930,6 +969,7 @@
     }
 
     function nextSlide() {
+      ensureBgmPlaying();
       if (isTyping) {
         skipTypewriter();
         return;
@@ -942,6 +982,7 @@
     }
 
     function prevSlide() {
+      ensureBgmPlaying();
       if (currentSlide > 0) {
         renderSlide(currentSlide - 1, true);
       }
@@ -956,7 +997,7 @@
       document.getElementById("muteIcon").textContent = isMuted ? "🔇" : "🔊";
       if (isMuted) {
         stopAllAudio();
-        setStatus("warn", "Suara dimatikan (Mute)");
+        setStatus("warn", "Suara Magnus dimatikan (Mute)");
       } else {
         speakSlide(currentSlide);
       }
