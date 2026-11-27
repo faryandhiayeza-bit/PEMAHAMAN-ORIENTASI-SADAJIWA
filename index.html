@@ -222,7 +222,7 @@
     </svg>
 
     <!-- CHIBI MAGNUS EDMUND SVG -->
-    <div id="chibiWrapper" class="chibi-idle relative z-10 w-[225px] sm:w-[255px] mb-[-10px] pointer-events-none">
+    <div id="chibiWrapper" class="chibi-idle relative z-10 w-[210px] sm:w-[250px] mb-[-10px] pointer-events-none">
       <svg viewBox="0 0 300 320" class="w-full h-auto drop-shadow-[0_14px_24px_rgba(0,0,0,0.85)]">
         <defs>
           <linearGradient id="blondeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -368,7 +368,7 @@
   </main>
 
   <!-- DIALOGUE & PRESENTATION PANEL -->
-  <section class="dialogue-box z-20 flex flex-col w-full max-w-4xl mx-auto rounded-t-2xl px-4 pt-3 pb-4 sm:px-6 sm:pb-5" style="height: 49dvh; min-height: 290px;">
+  <section class="dialogue-box z-30 flex flex-col w-full max-w-4xl mx-auto rounded-t-2xl px-4 pt-3 pb-16 sm:px-6 sm:pb-6" style="height: 52dvh; min-height: 310px;">
     
     <!-- Speaker Nameplate & Slide Progress -->
     <div class="flex items-center justify-between gap-2 mb-2.5">
@@ -404,16 +404,16 @@
       <div id="dialogueContent"></div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="flex items-center justify-between gap-3 pt-3 mt-2 border-t border-slate-800/80">
-      <button id="btnPrev" onclick="prevSlide()" class="btn-action flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-xs sm:text-sm font-semibold text-slate-300">
+    <!-- Bottom Navigation (Dinaikkan agar tidak tertutup lencana Netlify) -->
+    <div class="relative z-40 flex items-center justify-between gap-3 pt-3 mt-2 border-t border-slate-800/80">
+      <button id="btnPrev" onclick="prevSlide()" class="btn-action flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 disabled:opacity-35 disabled:pointer-events-none border border-slate-700 text-xs sm:text-sm font-semibold text-slate-300">
         <span>←</span>
         <span>Sebelumnya</span>
       </button>
 
       <div id="progressDots" class="hidden sm:flex items-center gap-1.5"></div>
 
-      <button id="btnNext" onclick="nextSlide()" class="btn-action flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-lg shadow-sky-500/25 text-xs sm:text-sm font-bold text-slate-950">
+      <button id="btnNext" onclick="nextSlide()" class="btn-action flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-lg shadow-sky-500/25 text-xs sm:text-sm font-bold text-slate-950">
         <span id="btnNextLabel">Lanjut</span>
         <span>→</span>
       </button>
@@ -689,10 +689,10 @@
         })
       });
 
+      const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error("Server TTS gagal: " + response.status);
+        throw new Error(data.error || ("HTTP " + response.status));
       }
-      const data = await response.json();
       if (!data.audioBase64) throw new Error("Data audio kosong");
       return "data:audio/mp3;base64," + data.audioBase64;
     }
@@ -737,10 +737,7 @@
         if (idMale) utter.voice = idMale;
 
         utter.onstart = () => {
-          if (playId === currentPlaybackId) {
-            startTalkingAnimation();
-            setStatus("ok", "Memutar suara cadangan perangkat");
-          }
+          if (playId === currentPlaybackId) startTalkingAnimation();
         };
         utter.onend = () => {
           if (playId === currentPlaybackId) stopTalkingAnimation();
@@ -783,7 +780,7 @@
         return;
       } catch (err) {
         if (playId !== currentPlaybackId) return;
-        setStatus("warn", "Memakai suara cadangan perangkat...");
+        setStatus("warn", "Gagal: " + err.message);
       }
 
       if (playId === currentPlaybackId) {
@@ -1001,4 +998,3 @@
   </script>
 </body>
 </html>
-
