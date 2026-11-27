@@ -4,12 +4,21 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { text, apiKey, referenceId } = JSON.parse(event.body);
+    const { text, referenceId } = JSON.parse(event.body);
+    const activeKey = process.env.FISH_API_KEY;
+
+    if (!activeKey) {
+      return {
+        statusCode: 401,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "FISH_API_KEY belum terbaca di Netlify. Lakukan Trigger Deploy." })
+      };
+    }
 
     const response = await fetch("https://api.fish.audio/v1/tts", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
+        "Authorization": `Bearer ${activeKey}`,
         "Content-Type": "application/json",
         "model": "s2.1-pro-free"
       },
