@@ -181,14 +181,9 @@
         <span id="muteIcon">🔊</span>
       </button>
 
-      <button onclick="openVoiceModal()" class="btn-action flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-xs font-semibold text-amber-300">
-        <span>🎙️</span>
-        <span>API Key</span>
-      </button>
-
       <button onclick="toggleChapterMenu()" class="btn-action flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200">
         <span>☰</span>
-        <span>Bab</span>
+        <span>Daftar Bab</span>
       </button>
     </div>
   </header>
@@ -197,9 +192,8 @@
   <div id="audioStatusBanner" class="z-20 px-3 py-1 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between text-[11px]">
     <div class="flex items-center gap-2 truncate">
       <span id="statusDot" class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
-      <span id="statusText" class="text-slate-300 truncate">Klik layar atau tombol API Key untuk mulai suara Magnus</span>
+      <span id="statusText" class="text-slate-300 truncate">Sentuh layar atau tombol Ulangi untuk memulai suara Magnus</span>
     </div>
-    <button onclick="openVoiceModal()" class="text-sky-400 font-semibold underline shrink-0 ml-2">Atur Key</button>
   </div>
 
   <!-- MAIN STAGE (CHIBI CHARACTER + BIKE SILHOUETTE) -->
@@ -437,44 +431,6 @@
     </div>
   </div>
 
-  <!-- VOICE API KEY MODAL -->
-  <div id="voiceModal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-slate-900 border border-amber-500/40 rounded-2xl p-5 shadow-2xl">
-      <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🎙️</span>
-          <div>
-            <h3 class="font-display font-bold text-sm text-amber-300 tracking-wide">SUARA OTOMATIS FISH AUDIO</h3>
-            <p class="text-[11px] text-slate-400">Model ID: 23cdfc77bc8e415c8cf407550045c537</p>
-          </div>
-        </div>
-        <button onclick="closeVoiceModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">✕</button>
-      </div>
-
-      <div class="space-y-3.5 text-xs text-slate-300">
-        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-slate-300">Fish Audio API Key:</span>
-            <span id="apiKeyStatus" class="text-[11px] text-slate-500">Belum diisi</span>
-          </div>
-          <input type="password" id="fishApiKeyInput" placeholder="Tempel API Key Fish Audio di sini..." class="w-full px-3 py-2.5 rounded-lg bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
-          <p class="text-[11px] text-slate-400 leading-relaxed">
-            Suara akan otomatis diproses melalui server Netlify Function dan disimpan di memori agar hemat kredit serta anti-blokir browser.
-          </p>
-        </div>
-
-        <div class="flex items-center justify-between gap-2 pt-1">
-          <button onclick="clearVoiceSettings()" class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold">
-            Hapus Key
-          </button>
-          <button onclick="saveVoiceSettings()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold shadow-lg shadow-amber-500/20">
-            Simpan & Putar Suara
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     const FISH_MODEL_ID = "23cdfc77bc8e415c8cf407550045c537";
 
@@ -631,11 +587,6 @@
     let activeAudio = null;
     let audioCache = {};
     let currentPlaybackId = 0;
-    let fishApiKey = "";
-
-    try {
-      fishApiKey = localStorage.getItem("sadajiwa_fish_key") || "";
-    } catch (e) {}
 
     function setStatus(type, msg) {
       const dot = document.getElementById("statusDot");
@@ -728,13 +679,12 @@
       stopTalkingAnimation();
     }
 
-    async function fetchFishAudioFromNetlify(text, apiKey) {
+    async function fetchFishAudioFromNetlify(text) {
       const response = await fetch("/.netlify/functions/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: text,
-          apiKey: apiKey,
           referenceId: FISH_MODEL_ID
         })
       });
@@ -815,29 +765,25 @@
       const playId = currentPlaybackId;
       const slide = slides[index];
 
-      if (fishApiKey) {
-        if (audioCache[index]) {
-          try {
-            setStatus("ok", "Memutar suara Magnus Edmund (Fish Audio)");
-            await playAudioElement(audioCache[index], playId);
-            return;
-          } catch (e) {}
-        }
-
-        setStatus("loading", "Memproses suara Fish Audio via server...");
+      if (audioCache[index]) {
         try {
-          const audioDataUrl = await fetchFishAudioFromNetlify(slide.speechText, fishApiKey);
-          if (playId !== currentPlaybackId) return;
-          audioCache[index] = audioDataUrl;
-          setStatus("ok", "Memutar suara Magnus Edmund (Fish Audio)");
-          await playAudioElement(audioDataUrl, playId);
+          setStatus("ok", "Memutar suara Magnus Edmund");
+          await playAudioElement(audioCache[index], playId);
           return;
-        } catch (err) {
-          if (playId !== currentPlaybackId) return;
-          setStatus("warn", "Pastikan deploy di Netlify & API Key benar. Memakai suara cadangan...");
-        }
-      } else {
-        setStatus("warn", "Masukkan Fish Audio API Key di tombol API Key untuk suara asli");
+        } catch (e) {}
+      }
+
+      setStatus("loading", "Memuat suara Magnus Edmund...");
+      try {
+        const audioDataUrl = await fetchFishAudioFromNetlify(slide.speechText);
+        if (playId !== currentPlaybackId) return;
+        audioCache[index] = audioDataUrl;
+        setStatus("ok", "Memutar suara Magnus Edmund");
+        await playAudioElement(audioDataUrl, playId);
+        return;
+      } catch (err) {
+        if (playId !== currentPlaybackId) return;
+        setStatus("warn", "Memakai suara cadangan perangkat...");
       }
 
       if (playId === currentPlaybackId) {
@@ -1043,47 +989,6 @@
       } else {
         modal.classList.add("hidden");
       }
-    }
-
-    function openVoiceModal() {
-      document.getElementById("fishApiKeyInput").value = fishApiKey;
-      updateApiKeyBadge();
-      document.getElementById("voiceModal").classList.remove("hidden");
-    }
-
-    function closeVoiceModal() {
-      document.getElementById("voiceModal").classList.add("hidden");
-    }
-
-    function updateApiKeyBadge() {
-      const badge = document.getElementById("apiKeyStatus");
-      if (fishApiKey) {
-        badge.textContent = "Tersimpan ✓";
-        badge.className = "text-[11px] text-emerald-400 font-semibold";
-      } else {
-        badge.textContent = "Belum diisi";
-        badge.className = "text-[11px] text-slate-500";
-      }
-    }
-
-    function saveVoiceSettings() {
-      fishApiKey = document.getElementById("fishApiKeyInput").value.trim();
-      try {
-        localStorage.setItem("sadajiwa_fish_key", fishApiKey);
-      } catch (e) {}
-      audioCache = {};
-      closeVoiceModal();
-      speakSlide(currentSlide);
-    }
-
-    function clearVoiceSettings() {
-      fishApiKey = "";
-      audioCache = {};
-      try {
-        localStorage.removeItem("sadajiwa_fish_key");
-      } catch (e) {}
-      document.getElementById("fishApiKeyInput").value = "";
-      updateApiKeyBadge();
     }
 
     if ("speechSynthesis" in window) {
